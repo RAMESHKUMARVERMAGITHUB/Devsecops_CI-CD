@@ -15,7 +15,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/KUNAL-MAURYA1470/Devsecops_CI-CD.git'
+                git branch: 'main', url: 'https://github.com/rameshkumarvermagithub/Devsecops_CI-CD.git'
             }
         }
         stage("Sonarqube Analysis "){
@@ -29,7 +29,7 @@ pipeline{
         stage("quality gate"){
            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar' 
                 }
             } 
         }
@@ -53,21 +53,21 @@ stage("Docker Build & Push"){
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build -t devsecops_ad ."
-                       sh "docker tag devsecops_ad kunalmaurya/devsecops_ad:latest "
-                       sh "docker push kunalmaurya/devsecops_ad:latest "
+                       sh "docker build -t rameshkumarverma/devsecops_ad ."
+                       // sh "docker tag devsecops_ad kunalmaurya/devsecops_ad:latest "
+                       sh "docker push rameshkumarverma/devsecops_ad:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image kunalmaurya/devsecops_ad:latest > trivy.txt" 
+                sh "trivy image rameshkumarvermagithub/devsecops_ad:latest > trivy.txt" 
             }
         }
 stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name 2048 -p 3000:3000 kunalmaurya/devsecops_ad:latest'
+                sh 'docker run -d --name 2048 -p 3000:3000 rameshkumarverma/devsecops_ad:latest'
             }
         }
 stage('Deploy to kubernets'){
